@@ -1,3 +1,5 @@
 .vscode
 .idea
 .git
+/venv
+__pycache__
