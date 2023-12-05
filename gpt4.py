@@ -10,15 +10,18 @@ client = AzureOpenAI(
   api_version="2023-07-01-preview"
 )
 
+SYSTEM_PROMPT = """You are a slideshow making assistant. The user will prompt you with an initial request.
+                Your goal is to create a slideshow based on the users request.
+                Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm.
+                When making a slideshow follow these steps:
+                1. Start with a title slide unless told otherwise
+                2. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user
+                3. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
+                4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides."""
+
+
 msgs = [
-    {"role": "system", "content": "You are a slideshow making assistant. The user will prompt you with an initial request."
-                                  "Your goal is to create a slideshow based on the users request."
-                                  "Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm."
-                                  "When making a slideshow follow these steps:"
-                                  "1. Start with a title slide unless told otherwise"
-                                  "2. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user"
-                                  "3. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form."
-                                  "4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides."},
+    {"role": "system", "content": SYSTEM_PROMPT},
     {"role": "user", "content": input()},
 ]
 
