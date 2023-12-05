@@ -19,11 +19,7 @@ SYSTEM_PROMPT = """You are a slideshow making assistant. The user will prompt yo
                 3. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
                 4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides."""
 
-
-msgs = [
-    {"role": "system", "content": SYSTEM_PROMPT},
-    {"role": "user", "content": input()},
-]
+themes = [ "blanktheme" ]
 
 tools = [
     {
@@ -93,7 +89,6 @@ tools = [
     }
 ]
 
-themes = [ "blanktheme" ]
 
 ''''''
 def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: str) -> str:
@@ -114,6 +109,12 @@ def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: 
 gen = SlideshowGenerator()
 
 if __name__ == "__main__":
+
+    msgs = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": input()},
+    ]
+
     while True:
         RESPONSE = client.chat.completions.create(
             model="slidesai",
