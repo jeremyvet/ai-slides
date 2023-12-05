@@ -1,16 +1,13 @@
-# This is a sample Python script.
+'''Main File'''
+from flask import Flask
+from waitress import serve
+from blueprints.conversation import conversation_controller
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+if __name__ == "__main__":
+    app = Flask(__name__)
 
+    app.register_blueprint(conversation_controller)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    print('starting server...')
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    serve(app, host='0.0.0.0', port="80")

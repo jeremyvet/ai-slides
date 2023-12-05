@@ -1,7 +1,8 @@
+'''Docstring'''
 import os
 import json
-from slideshow_generator import SlideshowGenerator
 from openai import AzureOpenAI
+from slideshow_generator import SlideshowGenerator
 
 client = AzureOpenAI(
   azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -23,7 +24,8 @@ msgs = [
 
 themes = [ "blanktheme" ]
 
-def delegateFunctionCall(generator: SlideshowGenerator, name: str, arguments: str) -> str:
+''''''
+def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: str) -> str:
     args = json.loads(arguments)
 
     if name == 'create_title':
@@ -41,7 +43,7 @@ def delegateFunctionCall(generator: SlideshowGenerator, name: str, arguments: st
 gen = SlideshowGenerator()
 
 while True:
-    response = client.chat.completions.create(
+    RESPONSE = client.chat.completions.create(
         model="slidesai",
         messages=msgs,
         tools=[
@@ -113,7 +115,7 @@ while True:
         ]
     )
 
-    choice = response.choices[0]
+    choice = RESPONSE.choices[0]
     if choice.message.content is None:
         choice.message.content = ""
     msgs.append(choice.message)
@@ -123,7 +125,7 @@ while True:
             function_name = call.function.name
             print(call)
 
-            content = delegateFunctionCall(gen, call.function.name, call.function.arguments)
+            content = delegate_function_call(gen, call.function.name, call.function.arguments)
 
             print(content)
             msgs.append(
