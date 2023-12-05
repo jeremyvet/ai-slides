@@ -17,12 +17,11 @@ class Theme:
 SYSTEM_PROMPT = f"""You are a slideshow making assistant. The user will prompt you with an initial request.
                 Your goal is to create a slideshow based on the users request.
                 Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm.
-                When making a slideshow follow these steps:
+                When making a slideshow always follow these steps before creating any slideshow elements:
                 1. Start with a title slide unless told otherwise
                 2. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user
                 3. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
                 4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
-                Here are the themes and descriptions:
                 """
 
 themes = [ "blanktheme", "mellow_yellow" ]
@@ -69,11 +68,11 @@ tools = [
                     },
                     "title": {
                         "type": "string",
-                        "description": "Text of Title of title and body slide",
+                        "description": "The title of this slide",
                     },
                     "content": {
                         "type": "string",
-                        "description": "Text of body of title and body slide",
+                        "description": "provide a small paragraph description. This text is medium sized and a single small paragraph should suffice",
                     },
                 },
                 "required": ["title", "content", "theme"],

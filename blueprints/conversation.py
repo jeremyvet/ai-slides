@@ -186,6 +186,8 @@ def get_message():
     if conv is None:
         return jsonify({"success": False, "message": "UUID not recognized"})
 
+    return jsonify(conv.toJSON())
+
 
 @conversation_controller.route('/conversation/list')
 def list_conversations():

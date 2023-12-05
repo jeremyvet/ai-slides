@@ -12,10 +12,15 @@ def clear_slide(slide):
         sp.getparent().remove(sp)
 
 
-def set_text(text_frame, text):
-    text_frame.clear()
+def set_text(text_frame, new_text):
+    p = text_frame.paragraphs[0]
+    if p.runs:
+        p.runs[0].text = new_text
+        for run in p.runs[1:]:
+            p._element.remove(run._element)
+    else:
+        p.add_run().text = new_text
 
-    text_frame.paragraphs[0].text = text
 
 
 class SlideshowGenerator:
