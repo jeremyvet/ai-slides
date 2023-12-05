@@ -96,7 +96,7 @@ def recreate_generator(messages: list) -> SlideshowGenerator:
 conversation_controller = Blueprint('conversation_controller', __name__)
 
 
-@conversation_controller.route('/conversation/chat')
+@conversation_controller.route('/conversation/chat', methods=['POST'])
 def chat():
     uuid = request.json.get('uuid')
     username = request.json.get('username')
@@ -167,7 +167,24 @@ def chat():
 
 @conversation_controller.route('/conversation/get_messages')
 def get_message():
-    pass
+    uuid = request.json.get('uuid')
+    username = request.json.get('username')
+
+    conv = None
+
+    if uuid == 'create_new':
+        return jsonify({"success": False, "message": "UUID not recognized"})
+    else:
+        uuid = UUID(uuid)
+        conversations = get_conversations(username)
+
+        for conversation in conversations:
+            if conversation.uuid == uuid:
+                conv = conversation
+                break
+
+    if conv is None:
+        return jsonify({"success": False, "message": "UUID not recognized"})
 
 
 @conversation_controller.route('/conversation/list')
