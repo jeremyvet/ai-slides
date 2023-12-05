@@ -65,7 +65,7 @@ def update_bullet_point_slide(prs, new_title, new_bulletpoints):
 # Add more functions for other slide types...
 
 # Load the presentation
-presentation_path = 'layoutslides.pptx'
+presentation_path = 'themes/layoutslides.pptx'
 prs = Presentation(presentation_path)
 
 # Update slides
