@@ -25,6 +25,74 @@ msgs = [
     {"role": "user", "content": input()},
 ]
 
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "create_title",
+            "description": "Creates title slide, used best as first slide of presentation or to start a seperate section",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "theme": {
+                        "type": "string",
+                        "enum": themes,
+                        "description": "The theme of the current slide. Should be kept consistent througout the slideshow except when specifically told otherwise.",
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Text of Title of title slide",
+                    },
+                    "subtitle": {
+                        "type": "string",
+                        "description": "Text of subtitle of title slide",
+                    },
+                },
+                "required": ["title", "subtitle", "theme"],
+            },
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_content_slide",
+            "description": "Creates a content slide. Each content slide has a title and a body, the title defines the main idea of the slide and the body provides a general description of the main idea. Use this slide for explaining topics and introducing information.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "theme": {
+                        "type": "string",
+                        "enum": themes,
+                        "description": "The theme of the current slide. Should be kept consistent througout the slideshow except when specifically told otherwise.",
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Text of Title of title and body slide",
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Text of body of title and body slide",
+                    },
+                },
+                "required": ["title", "content", "theme"],
+            },
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "save",
+            "description": "Completes the slideshow, and sends it to the user.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                },
+                "required": [],
+            },
+        }
+    }
+]
+
 themes = [ "blanktheme" ]
 
 ''''''
@@ -50,73 +118,7 @@ if __name__ == "__main__":
         RESPONSE = client.chat.completions.create(
             model="slidesai",
             messages=msgs,
-            tools=[
-                {
-                    "type": "function",
-                    "function": {
-                        "name": "create_title",
-                        "description": "Creates title slide, used best as first slide of presentation or to start a seperate section",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "theme": {
-                                    "type": "string",
-                                    "enum": themes,
-                                    "description": "The theme of the current slide. Should be kept consistent througout the slideshow except when specifically told otherwise.",
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "Text of Title of title slide",
-                                },
-                                "subtitle": {
-                                    "type": "string",
-                                    "description": "Text of subtitle of title slide",
-                                },
-                            },
-                            "required": ["title", "subtitle", "theme"],
-                        },
-                    }
-                },
-                {
-                    "type": "function",
-                    "function": {
-                        "name": "create_content_slide",
-                        "description": "Creates a content slide. Each content slide has a title and a body, the title defines the main idea of the slide and the body provides a general description of the main idea. Use this slide for explaining topics and introducing information.",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "theme": {
-                                    "type": "string",
-                                    "enum": themes,
-                                    "description": "The theme of the current slide. Should be kept consistent througout the slideshow except when specifically told otherwise.",
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "Text of Title of title and body slide",
-                                },
-                                "content": {
-                                    "type": "string",
-                                    "description": "Text of body of title and body slide",
-                                },
-                            },
-                            "required": ["title", "content", "theme"],
-                        },
-                    }
-                },
-                {
-                    "type": "function",
-                    "function": {
-                        "name": "save",
-                        "description": "Completes the slideshow, and sends it to the user.",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                            },
-                            "required": [],
-                        },
-                    }
-                }
-            ]
+            tools=tools
         )
 
         choice = RESPONSE.choices[0]
