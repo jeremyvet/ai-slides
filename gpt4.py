@@ -10,21 +10,31 @@ client = AzureOpenAI(
 )
 
 msgs = [
-    {"role": "system", "content": "You are a slideshow making assistant. "
-                                  "You will use blanktheme.pptx as your theme unless told otherwise."
-                                  ""},
+    {"role": "system", "content": "You are a slideshow making assistant. The user will prompt you with an initial request."
+                                  "Your goal is to create a slideshow based on the users request."
+                                  "Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm."
+                                  "When making a slideshow follow these steps:"
+                                  "1. Start with a title slide unless told otherwise"
+                                  "2. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user"
+                                  "3. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form."
+                                  "4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides."},
     {"role": "user", "content": input()},
 ]
 
-themes = [ "layoutslides", "test_notugly", "blanktheme" ]
+themes = [ "blanktheme" ]
 
 def delegateFunctionCall(generator: SlideshowGenerator, name: str, arguments: str) -> str:
     args = json.loads(arguments)
 
     if name == 'create_title':
         generator.create_title(args["theme"], args["title"], args["subtitle"])
+    elif name == 'create_content_slide':
+        generator.create_content_slide(args["theme"], args["title"], args["content"])
     elif name == 'save':
-        generator.save("cool")
+        try:
+            generator.save("cool")
+        except:
+            return json.dumps({"result": "Save failed. Please try again!"})
 
     return json.dumps({"result": "Task Executed Successfully"})
 
@@ -65,7 +75,7 @@ while True:
                 "type": "function",
                 "function": {
                     "name": "create_content_slide",
-                    "description": "Creates a title and body slide, best used to convey information",
+                    "description": "Creates a content slide. Each content slide has a title and a body, the title defines the main idea of the slide and the body provides a general description of the main idea. Use this slide for explaining topics and introducing information.",
                     "parameters": {
                         "type": "object",
                         "properties": {
