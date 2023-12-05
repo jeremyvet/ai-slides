@@ -61,12 +61,19 @@ class SlideshowGenerator:
 
         self.copy_slide(pres, 0)
 
+    def create_content_slide(self, theme: str, title: str, content: str):
+        pres = Presentation("./themes/" + theme + '.pptx')
+
+        for shape in pres.slides[1].shapes:
+            if shape.has_text_frame:
+                text_frame = shape.text_frame
+
+                if compare_text(text_frame, "$text.title"):
+                    set_text(text_frame, title)
+                elif compare_text(text_frame, "$text.content"):
+                    set_text(text_frame, content)
+
+        self.copy_slide(pres, 1)
+
     def save(self, name):
         self.pres.save(name + ".pptx")
-
-gen = SlideshowGenerator()
-
-gen.create_title("test_notugly", "I am a title", "I am a subtitle")
-gen.create_title("test_ugly", "I am a title again", "I am a subtitle again")
-
-gen.save("kys")
