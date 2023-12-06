@@ -24,7 +24,7 @@ SYSTEM_PROMPT = f"""You are a slideshow making assistant. The user will prompt y
                 4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
                 """
 
-themes = [ "blanktheme", "mellow_yellow" ]
+themes = [ "blanktheme", "mellow_yellow", "starlight", "cavern", "forest_path" ]
 
 tools = [
     {
