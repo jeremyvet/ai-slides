@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify
 from uuid import uuid1, UUID
 import json
-import os
+import base64
 from threading import Lock
 from openai import AzureOpenAI
 from blueprints.cors import _build_cors_preflight_response, _corsify_actual_response
@@ -137,6 +137,10 @@ def chat():
 
     gen = recreate_generator(conv.messages)
 
+    gen.save_file_name = f'{str(conv.uuid)}_{len(conv.presentations)}'
+
+    gen.save_callbacks.append(lambda a: conv.presentations.append(gen.save_file_name))
+
     model_json = json.loads(choice.message.model_dump_json())
 
     if not model_json.get("function_call"):
@@ -188,7 +192,7 @@ def chat():
     return _corsify_actual_response(jsonify(conv.toJSON()))
 
 
-@conversation_controller.route('/conversation/get_messages', methods=['GET', 'OPTIONS'])
+@conversation_controller.route('/conversation/get_messages', methods=['POST', 'OPTIONS'])
 def get_message():
     if request.method == "OPTIONS":
         return _build_cors_preflight_response()
@@ -214,11 +218,26 @@ def get_message():
     return _corsify_actual_response(jsonify(conv.toJSON()))
 
 
-@conversation_controller.route('/conversation/list')
+@conversation_controller.route('/conversation/list', method=["POST", "OPTIONS"])
 def list_conversations():
     pass
 
 
-@conversation_controller.route('/conversation/get_presentation')
+@conversation_controller.route('/conversation/get_presentation', method=["POST", "OPTIONS"])
 def get_presentation():
-    pass
+    if request.method == "OPTIONS":
+        return _build_cors_preflight_response()
+    presentation_uuid = request.json.get('presentation_uuid')
+
+    conv = None
+
+    if conv is None:
+        return _corsify_actual_response(jsonify({"success": False, "message": "UUID not recognized"}))
+    
+    encoded_content = None
+
+    with open("./presentations/" + presentation_uuid + ".pptx", "rb") as f:
+        encoded_content = base64.b64encode(f.read())
+        
+
+    return _corsify_actual_response(jsonify({"base64": encoded_content}))

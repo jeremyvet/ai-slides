@@ -26,7 +26,9 @@ def set_text(text_frame, new_text):
 class SlideshowGenerator:
     def __init__(self):
         self.pres = Presentation()
-
+        self.save_file_name = ""
+        self.save_callbacks = []
+    
     def copy_slide(self, source, idx):
         ext_slide = source.slides[idx]
 
@@ -80,5 +82,8 @@ class SlideshowGenerator:
 
         self.copy_slide(pres, 1)
 
-    def save(self, name):
-        self.pres.save(name + ".pptx")
+    def save(self):
+        self.pres.save("./presentations/" + self.save_file_name + ".pptx")
+
+        for callback in self.save_callbacks:
+            callback()

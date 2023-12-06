@@ -105,7 +105,7 @@ def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: 
         generator.create_content_slide(args["theme"], args["title"], args["content"])
     elif name == 'save':
         try:
-            generator.save("cool")
+            generator.save()
         except:
             return json.dumps({"result": "Save failed. Please try again!"})
 
