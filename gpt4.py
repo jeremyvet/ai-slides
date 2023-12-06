@@ -72,7 +72,7 @@ tools = [
                     },
                     "content": {
                         "type": "string",
-                        "description": "provide a large and detialed paragraph description. This text is medium sized and a single paragraph, which is about 5-6 sentences, should suffice",
+                        "description": "Provide a large and detialed paragraph description. This text is medium sized so a medium sized paragraph, which is about 5-6 sentences, should suffice",
                     },
                 },
                 "required": ["title", "content", "theme"],
