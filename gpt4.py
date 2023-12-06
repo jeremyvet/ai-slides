@@ -53,11 +53,11 @@ tools = [
             },
         }
     },
-    {
-        "type": "function",
+    {        "type": "function",
+
         "function": {
             "name": "create_content_slide",
-            "description": "Creates a content slide. Each content slide has a title and a body, the title defines the main idea of the slide and the body provides a general description of the main idea. Use this slide for explaining topics and introducing information.",
+            "description": "Creates a content slide. Each content slide has a title and a body, the title defines the main idea of the slide and the body goes into detail about the main idea of the slide. Use this slide for explaining proccesses or topics. When using this slide, make your responses detailed and specific, use 5-6 sentences.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -72,7 +72,7 @@ tools = [
                     },
                     "content": {
                         "type": "string",
-                        "description": "provide a small paragraph description. This text is medium sized and a single small paragraph should suffice",
+                        "description": "provide a large and detialed paragraph description. This text is medium sized and a single paragraph, which is about 5-6 sentences, should suffice",
                     },
                 },
                 "required": ["title", "content", "theme"],
