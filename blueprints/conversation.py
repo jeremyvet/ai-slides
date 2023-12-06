@@ -142,23 +142,42 @@ def chat():
 
     conv.messages.append(model_json)
 
-    if choice.finish_reason == 'tool_calls':
+    while not choice.finish_reason == "stop":
+        if choice.finish_reason == 'tool_calls':
 
-        for call in choice.message.tool_calls:
-            function_name = call.function.name
-            print(call)
+            for call in choice.message.tool_calls:
+                function_name = call.function.name
+                print(call)
 
-            content = delegate_function_call(gen, call.function.name, call.function.arguments)
+                content = delegate_function_call(gen, call.function.name, call.function.arguments)
 
-            print(content)
-            conv.messages.append(
-                {
-                    "tool_call_id": call.id,
-                    "role": "tool",
-                    "name": function_name,
-                    "content": content,
-                }
+                print(content)
+                conv.messages.append(
+                    {
+                        "tool_call_id": call.id,
+                        "role": "tool",
+                        "name": function_name,
+                        "content": content,
+                    }
+                )
+
+            RESPONSE = client.chat.completions.create(
+                    model="slidesai",
+                    messages=[{"role": "system", "content": SYSTEM_PROMPT}] + conv.messages,
+                    tools=tools
             )
+            choice = RESPONSE.choices[0]
+
+            model_json = json.loads(choice.message.model_dump_json())
+
+            if not model_json.get("function_call"):
+                model_json.pop("function_call")
+            if not model_json.get("tool_calls"):
+                model_json.pop("tool_calls")
+
+            conv.messages.append(model_json)
+        else:
+            print(f'ALTERNATE FINISH {choice.finish_reason}')
 
     update_conversation(conv)
 
