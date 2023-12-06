@@ -139,7 +139,7 @@ def chat():
 
     gen.save_file_name = f'{str(conv.uuid)}_{len(conv.presentations)}'
 
-    gen.save_callbacks.append(lambda a: conv.presentations.append(gen.save_file_name))
+    gen.save_callbacks.append(lambda: conv.presentations.append(gen.save_file_name))
 
     model_json = json.loads(choice.message.model_dump_json())
 
@@ -218,26 +218,21 @@ def get_message():
     return _corsify_actual_response(jsonify(conv.toJSON()))
 
 
-@conversation_controller.route('/conversation/list', method=["POST", "OPTIONS"])
+@conversation_controller.route('/conversation/list', methods=["POST", "OPTIONS"])
 def list_conversations():
     pass
 
 
-@conversation_controller.route('/conversation/get_presentation', method=["POST", "OPTIONS"])
+@conversation_controller.route('/conversation/get_presentation', methods=["POST", "OPTIONS"])
 def get_presentation():
     if request.method == "OPTIONS":
         return _build_cors_preflight_response()
     presentation_uuid = request.json.get('presentation_uuid')
-
-    conv = None
-
-    if conv is None:
-        return _corsify_actual_response(jsonify({"success": False, "message": "UUID not recognized"}))
     
     encoded_content = None
 
     with open("./presentations/" + presentation_uuid + ".pptx", "rb") as f:
-        encoded_content = base64.b64encode(f.read())
-        
-
-    return _corsify_actual_response(jsonify({"base64": encoded_content}))
+        file_content = f.read()
+        encoded_content = base64.b64encode(file_content)
+        encoded_string = encoded_content.decode('utf-8')
+        return _corsify_actual_response(jsonify({"file_data": encoded_string}))
