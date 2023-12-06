@@ -82,6 +82,17 @@ class SlideshowGenerator:
 
         self.copy_slide(pres, 1)
 
+    def create_thank_you_slide(self, theme: str, thank_you_title: str):
+        pres = Presentation("./themes/" + theme + '.pptx')
+
+        for shape in pres.slides[9].shapes:
+            if shape.has_text_frame:
+                text_frame = shape.text_frame
+
+                if compare_text(text_frame, "$text.thanks"):
+                    set_text(text_frame, thank_you_title)
+
+        self.copy_slide(pres, 9)
     def save(self):
         self.pres.save("./presentations/" + self.save_file_name + ".pptx")
 

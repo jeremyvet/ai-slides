@@ -19,9 +19,10 @@ SYSTEM_PROMPT = f"""You are a slideshow making assistant. The user will prompt y
                 Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm.
                 When making a slideshow always follow these steps before creating any slideshow elements:
                 1. Start with a title slide unless told otherwise
-                2. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user
-                3. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
-                4. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
+                2. End the slideshow with a thank you slide unless told otherwise
+                3. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user.
+                4. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
+                5. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
                 """
 
 themes = [ "blanktheme", "mellow_yellow", "starlight", "cavern", "forest_path" ]
@@ -79,6 +80,28 @@ tools = [
             },
         }
     },
+{
+        "type": "function",
+        "function": {
+            "name": "create_thank_you_slide",
+            "description": "Creates thank you slide, contains one large sized text box in the middle of the slide. Best used as last slide of slideshow.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "theme": {
+                        "type": "string",
+                        "enum": themes,
+                        "description": "The theme of the current slide. Should be kept consistent througout the slideshow except when specifically told otherwise.",
+                    },
+                    "thank_you_title": {
+                        "type": "string",
+                        "description": "Text for thank you slide. Provide a short amount of text, usually 3-4 words.",
+                    }
+                },
+                "required": ["thank_you_title", "theme"],
+            },
+        }
+    },
     {
         "type": "function",
         "function": {
@@ -91,7 +114,8 @@ tools = [
                 "required": [],
             },
         }
-    }
+    },
+
 ]
 
 
@@ -103,6 +127,8 @@ def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: 
         generator.create_title(args["theme"], args["title"], args["subtitle"])
     elif name == 'create_content_slide':
         generator.create_content_slide(args["theme"], args["title"], args["content"])
+    elif name == 'create_thank_you_slide':
+        generator.create_thank_you_slide(args["theme"], args["thank_you_title"])
     elif name == 'save':
         try:
             generator.save()
