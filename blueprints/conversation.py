@@ -5,6 +5,7 @@ import json
 import os
 from threading import Lock
 from openai import AzureOpenAI
+from blueprints.cors import _build_cors_preflight_response, _corsify_actual_response
 from slideshow_generator import SlideshowGenerator
 from gpt4 import client, SYSTEM_PROMPT, tools, delegate_function_call
 
@@ -96,8 +97,11 @@ def recreate_generator(messages: list) -> SlideshowGenerator:
 conversation_controller = Blueprint('conversation_controller', __name__)
 
 
-@conversation_controller.route('/conversation/chat', methods=['POST'])
+@conversation_controller.route('/conversation/chat', methods=['POST', 'OPTIONS'])
 def chat():
+    if request.method == "OPTIONS":
+        return _build_cors_preflight_response()
+
     uuid = request.json.get('uuid')
     username = request.json.get('username')
     new_message = request.json.get('message')
@@ -117,7 +121,7 @@ def chat():
                 break
 
     if conv is None:
-        return jsonify({"success": False, "message": "UUID not recognized"})
+        return _corsify_actual_response(jsonify({"success": False, "message": "UUID not recognized"}))
 
     conv.messages.append({"role": "user", "content": new_message})
 
@@ -181,11 +185,13 @@ def chat():
 
     update_conversation(conv)
 
-    return jsonify(conv.toJSON())
+    return _corsify_actual_response(jsonify(conv.toJSON()))
 
 
-@conversation_controller.route('/conversation/get_messages')
+@conversation_controller.route('/conversation/get_messages', methods=['GET', 'OPTIONS'])
 def get_message():
+    if request.method == "OPTIONS":
+        return _build_cors_preflight_response()
     uuid = request.json.get('uuid')
     username = request.json.get('username')
 
@@ -203,9 +209,9 @@ def get_message():
                 break
 
     if conv is None:
-        return jsonify({"success": False, "message": "UUID not recognized"})
+        return _corsify_actual_response(jsonify({"success": False, "message": "UUID not recognized"}))
 
-    return jsonify(conv.toJSON())
+    return _corsify_actual_response(jsonify(conv.toJSON()))
 
 
 @conversation_controller.route('/conversation/list')
