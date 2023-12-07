@@ -54,8 +54,8 @@ tools = [
             },
         }
     },
-    {        "type": "function",
-
+    {
+        "type": "function",
         "function": {
             "name": "create_content_slide",
             "description": "Creates a content slide. Each content slide has a title and a body, the title defines the main idea of the slide and the body goes into detail about the main idea of the slide. Use this slide for explaining proccesses or topics. When using this slide, make your responses detailed and specific, use 5-6 sentences.",
@@ -80,7 +80,7 @@ tools = [
             },
         }
     },
-{
+    {
         "type": "function",
         "function": {
             "name": "create_thank_you_slide",
@@ -99,6 +99,36 @@ tools = [
                     }
                 },
                 "required": ["thank_you_title", "theme"],
+            },
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_title_two_columns_slide",
+            "description": "Creates a slide with a title at the top of the slide, and 2 columns on either side of the slide. Use this slide for comparing two things, or just as a normal two column slide.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "theme": {
+                        "type": "string",
+                        "enum": themes,
+                        "description": "The theme of the current slide. Should be kept consistent througout the slideshow except when specifically told otherwise.",
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The title of this slide",
+                    },
+                    "left_column": {
+                        "type": "string",
+                        "description": "Text for the column on the left side of the slide. Provide an adaquete amount of text for the slide's purpose.",
+                    },
+                    "right_column": {
+                        "type": "string",
+                        "description": "Text for the column on the right side of the slide. Provide an adaquete amount of text for the slide's purpose.",
+                    },
+                },
+                "required": ["title", "left_column", "right_column", "theme"],
             },
         }
     },
@@ -129,6 +159,8 @@ def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: 
         generator.create_content_slide(args["theme"], args["title"], args["content"])
     elif name == 'create_thank_you_slide':
         generator.create_thank_you_slide(args["theme"], args["thank_you_title"])
+    elif name == 'create_title_two_columns_slide':
+        generator.create_title_two_columns_slide((args["theme"], args["title"], args["left_column"], args["right_column"], args["theme"],))
     elif name == 'save':
         try:
             generator.save()

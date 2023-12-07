@@ -22,13 +22,12 @@ def set_text(text_frame, new_text):
         p.add_run().text = new_text
 
 
-
 class SlideshowGenerator:
     def __init__(self):
         self.pres = Presentation()
         self.save_file_name = ""
         self.save_callbacks = []
-    
+
     def copy_slide(self, source, idx):
         ext_slide = source.slides[idx]
 
@@ -93,6 +92,23 @@ class SlideshowGenerator:
                     set_text(text_frame, thank_you_title)
 
         self.copy_slide(pres, 9)
+
+    def create_title_two_columns_slide(self, theme: str, title: str, left_column: str, right_column: str):
+        pres = Presentation("./themes/" + theme + '.pptx')
+
+        for shape in pres.slides[2].shapes:
+            if shape.has_text_frame:
+                text_frame = shape.text_frame
+
+                if compare_text(text_frame, "$text.title"):
+                    set_text(text_frame, title)
+                elif compare_text(text_frame, "$text.leftbox"):
+                    set_text(text_frame, left_column)
+                elif compare_text(text_frame, "$text.rightbox"):
+                    set_text(text_frame, right_column)
+
+        self.copy_slide(pres, 2)
+
     def save(self):
         self.pres.save("./presentations/" + self.save_file_name + ".pptx")
 
