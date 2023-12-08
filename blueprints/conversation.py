@@ -220,7 +220,18 @@ def get_message():
 
 @conversation_controller.route('/conversation/list', methods=["POST", "OPTIONS"])
 def list_conversations():
-    pass
+    if request.method == "OPTIONS":
+        return _build_cors_preflight_response()
+    username = request.json.get('username')
+
+    conv = get_conversations(username)
+
+    conv_list = []
+    for conversation in conv:
+        conv_list.append(conversation.toJSON())
+
+    return _corsify_actual_response(jsonify(conv_list))
+        
 
 
 @conversation_controller.route('/conversation/get_presentation', methods=["POST", "OPTIONS"])

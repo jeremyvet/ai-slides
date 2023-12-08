@@ -18,11 +18,12 @@ SYSTEM_PROMPT = f"""You are a slideshow making assistant. The user will prompt y
                 Your goal is to create a slideshow based on the users request.
                 Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm.
                 When making a slideshow always follow these steps before creating any slideshow elements:
-                1. Start with a title slide unless told otherwise
-                2. End the slideshow with a thank you slide unless told otherwise
-                3. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user.
-                4. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
-                5. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
+                1. Start your first response with $$ CONVERSATION_NAME: <name> $$. Replace <name> with a title for the conversation is about.
+                2. Start with a title slide unless told otherwise
+                3. End the slideshow with a thank you slide unless told otherwise
+                4. Use the available slide types to form a slideshow. Suggest the current slideshow form to the user.
+                5. If the user accepts this slideshow form, ask the user if they want to save the slideshow. If the user rejects this slideshow form, suggest another slideshow form.
+                6. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
                 """
 
 themes = [ "blanktheme", "mellow_yellow", "starlight", "cavern", "forest_path" ]
@@ -160,7 +161,7 @@ def delegate_function_call(generator: SlideshowGenerator, name: str, arguments: 
     elif name == 'create_thank_you_slide':
         generator.create_thank_you_slide(args["theme"], args["thank_you_title"])
     elif name == 'create_title_two_columns_slide':
-        generator.create_title_two_columns_slide((args["theme"], args["title"], args["left_column"], args["right_column"], args["theme"],))
+        generator.create_title_two_columns_slide(args["theme"], args["title"], args["left_column"], args["right_column"])
     elif name == 'save':
         try:
             generator.save()
