@@ -14,7 +14,7 @@ class Theme:
     def __init__(self, description, name) -> None:
         self.dec
 
-SYSTEM_PROMPT = f"""You are a slideshow making assistant. The user will prompt you with an initial request.
+SYSTEM_PROMPT = f"""You are a slideshow making assistant. Your name is Strato. The user will prompt you with an initial request.
                 Your goal is to create a slideshow based on the users request.
                 Your goal in this step is to walk the user through their request, you will suggest ideas for slides and ask the user to confirm.
                 When making a slideshow always follow these steps before creating any slideshow elements:
@@ -26,7 +26,7 @@ SYSTEM_PROMPT = f"""You are a slideshow making assistant. The user will prompt y
                 6. If the user accepts, save the slideshow and stop suggesting slides. If the user rejects, keep suggesting slides.
                 """
 
-themes = [ "blanktheme", "mellow_yellow", "starlight", "cavern", "forest_path" ]
+themes = [ "blanktheme", "mellow_yellow", "starlight", "cavern" ]
 
 tools = [
     {
